@@ -2,6 +2,8 @@
 
 #include "instance.hpp"
 
+#include "bins.hpp"
+
 class Solver {
 
     public:
@@ -18,6 +20,8 @@ class Solver {
         // linear relaxation (glpk)
         unsigned int linear_relaxation_glpk(unsigned int upper_bound);
 
+        // linear relaxation (glpk)
+        unsigned int linear_relaxation_glpk_v2(Bins& bins);
 
     private:
 
