@@ -42,6 +42,10 @@ void Bins::enumerate() {
             // first: record the new pattern, as the bin is full
             bins.push_back(Bin());
             bins.back().objs.assign(pending.begin(), pending.end());
+            bins.back().objs_occ.resize(_instance.n_obj(), 0);
+            for(auto& elt: bins.back().objs) {
+                bins.back().objs_occ[elt] ++;
+            }
             bins.back().size = _instance.bin_size-remaining_size;
 
 

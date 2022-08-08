@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Aug  8 11:46:43 2022
+# Make data base, printed on Mon Aug  8 18:05:42 2022
 
 # Variables
 
@@ -47,7 +47,7 @@ VSCODE_NLS_CONFIG = {"locale":"fr","availableLanguages":{},"_languagePackSupport
 # environment
 _ = /usr/share/code/code
 # makefile (from 'Makefile', line 3)
-CFLAGS = -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra 
+CFLAGS = -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3
 # environment
 JOURNAL_STREAM = 8:63332
 # environment
@@ -189,7 +189,7 @@ QT_ACCESSIBILITY = 1
 # environment
 DEFAULTS_PATH = /usr/share/gconf/ubuntu.default.path
 # makefile (from 'Makefile', line 5)
-OBJECTS_FILES = solver.o bins.o instance.o main.o
+OBJECTS_FILES = bounds.o solver.o bins.o instance.o main.o
 # default
 MAKEFILES := 
 # automatic
@@ -225,9 +225,9 @@ VSCODE_PID = 4321
 
 # Directories
 
-# . (device 66311, inode 13377591): 21 files, no impossibilities.
+# . (device 66311, inode 13377591): 24 files, no impossibilities.
 
-# 21 files, no impossibilities in 1 directories.
+# 24 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -244,6 +244,12 @@ VSCODE_PID = 4321
 # Files
 
 # Not a target:
+bounds.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
 all:
 #  Command line target.
 #  Implicit rule search has been done.
@@ -258,7 +264,7 @@ all:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-08 01:47:23.935511665
+#  Last modified 2022-08-08 18:05:33.38262579
 #  File has been updated.
 #  Successfully updated.
 
@@ -274,13 +280,13 @@ clean:
 #  File does not exist.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 17):
+ 
 	@rm -rf *.o main
 
-main: solver.o bins.o instance.o main.o
+main: bounds.o solver.o bins.o instance.o main.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
 #  recipe to execute (from 'Makefile', line 8):
 	$(CC) $(CFLAGS) $(OBJECTS_FILES) -lglpk -o main
 
@@ -309,19 +315,19 @@ bins.o:
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=11/1024=1%, Rehash=0, Collisions=0/27=0%
+# Load=12/1024=1%, Rehash=0, Collisions=0/29=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 31 / storage = 268 B / avg = 8 B
-# current buf: size = 8162 B / used = 268 B / count = 31 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 34 / storage = 299 B / avg = 8 B
+# current buf: size = 8162 B / used = 299 B / count = 34 / avg = 8 B
 
-# strcache performance: lookups = 46 / hit rate = 32%
+# strcache performance: lookups = 50 / hit rate = 32%
 # hash-table stats:
-# Load=31/8192=0%, Rehash=0, Collisions=1/46=2%
-# Finished Make data base on Mon Aug  8 11:46:43 2022
+# Load=34/8192=0%, Rehash=0, Collisions=1/50=2%
+# Finished Make data base on Mon Aug  8 18:05:42 2022
 
  
