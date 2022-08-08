@@ -8,6 +8,7 @@ class Bin {
     public:
         Bin() { }
         std::vector<int> objs; // objects in the bin
+        std::vector<int> objs_occ; // n occurrences for each objects
         int size; // size filled in the bin
 
 };

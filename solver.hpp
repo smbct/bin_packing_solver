@@ -11,17 +11,13 @@ class Solver {
         // constructor
         Solver(Instance& instance);
 
-        // best fit heuristic
-        unsigned int best_fit();
+        
 
-        // linear relaxation
-        unsigned int linear_relaxation();
+        void update_sol_add(Bin& bin, std::vector<int>& to_insert, int& n_obj_rem, double& length_rem);
 
-        // linear relaxation (glpk)
-        unsigned int linear_relaxation_glpk(unsigned int upper_bound);
+        void update_sol_remove(Bin& bin, std::vector<int>& to_insert, int& n_obj_rem, double& length_rem);
 
-        // linear relaxation (glpk)
-        unsigned int linear_relaxation_glpk_v2(Bins& bins);
+        unsigned int solve_bins(Bins& bins);
 
     private:
 

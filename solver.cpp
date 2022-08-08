@@ -1,8 +1,7 @@
 #include "solver.hpp"
-
 #include "bins.hpp"
+#include "bounds.hpp"
 
-#include <numeric>
 #include <algorithm>
 
 #include <cmath>
@@ -13,6 +12,9 @@
 
 #include <set>
 
+#include <stack>
+#include <list>
+
 using namespace std;
 
 //---------------------------------------------------------
@@ -21,325 +23,151 @@ Solver::Solver(Instance& instance) : _instance(instance) {
 }
 
 //---------------------------------------------------------
-unsigned int Solver::best_fit() {
-
-    vector<Bin> solution;
-
-    vector<int> sorted_objects(_instance.n_obj());
-    std::iota(sorted_objects.begin(), sorted_objects.end(), 0);
-
-    // sort the objects according to the size
-    sort(sorted_objects.begin(), sorted_objects.end(), [this](unsigned int ind_left, unsigned int ind_right) { return _instance.objects[ind_left].size > _instance.objects[ind_right].size; } );
-
-    // for(unsigned int i = 0; i < sorted_objects.size(); i ++) {
-    //     cout << sorted_objects[i] << ":" << _instance.objects[sorted_objects[i]].size << ", ";
-    // }
-    // cout << endl;
-
-    for(unsigned int obj_ind = 0; obj_ind < _instance.n_obj(); obj_ind ++) {
-        for(unsigned int nb = 1; nb <= _instance.objects[obj_ind].nb; nb ++ ) {
-
-
-            // look for the most filled bin able to contain the object
-            int best_bin = -1;
-
-            for(unsigned int bin_ind = 0; bin_ind < solution.size(); bin_ind ++) {
-                if(_instance.bin_size - solution[bin_ind].size >= _instance.objects[obj_ind].size) {
-                    if(best_bin == -1 || solution[bin_ind].size > solution[best_bin].size) {
-                        best_bin = bin_ind;
-                    }
-                }
-            }
-
-            if(best_bin != -1) { // the best been is updated
-                solution[best_bin].size += _instance.objects[obj_ind].size;
-                solution[best_bin].objs.push_back(obj_ind); 
-            } else { // a new bin is open
-                solution.push_back(Bin());
-                solution.back().size = _instance.objects[obj_ind].size;
-                solution.back().objs.push_back(obj_ind);
-            }
-
-
-        }
-    }
-
+void Solver::update_sol_add(Bin& bin, vector<int>& to_insert, int& n_obj_rem, double& length_rem) {
     
-
-    return static_cast<unsigned int>(solution.size());
-
-}
-
-
-//---------------------------------------------------------
-unsigned int Solver::linear_relaxation() {
-
-    float value = 0;
-    for(unsigned int obj_ind = 0; obj_ind < _instance.n_obj(); obj_ind ++) {
-        value += static_cast<float>(_instance.objects[obj_ind].size*_instance.objects[obj_ind].nb);
-    }
-
-    value /= static_cast<float>(_instance.bin_size);
-
-    cout << "linear relaxation (float): " << value << endl;
-
-    return static_cast<unsigned int>(ceil(value));
-
-}
-
-
-//---------------------------------------------------------
-unsigned int Solver::linear_relaxation_glpk(unsigned int upper_bound) {
-
-    unsigned int n_bins = upper_bound;
-    unsigned int n_objects = 0;
-    for(unsigned int obj_ind = 0; obj_ind < _instance.n_obj(); obj_ind ++) {
-        n_objects += _instance.objects[obj_ind].nb;
-    }
-
-    glp_prob* prob;
-    prob = glp_create_prob();
-    glp_set_prob_name(prob, "Bin packing lr");
-    glp_set_obj_dir(prob, GLP_MIN);
-
-    // variables
-    // n_objects*n_bins variables x
-    // upper_bound bin variables y
-
-    unsigned int n_var = n_objects*n_bins + n_bins;
-    glp_add_cols(prob, n_var);
-    for(unsigned int i = 0; i < n_var; i++) {
-        glp_set_col_bnds(prob, i +1, GLP_DB, 0.0, 1.0);
-        glp_set_col_kind(prob, i +1, GLP_CV);
-    }
-
-    // objective function coefficients     
-    for(unsigned int x_ind = 0; x_ind < n_objects*n_bins; x_ind ++) {
-        glp_set_obj_coef(prob, x_ind +1, 0.);
-    }
-    for(unsigned int bin_ind = 0; bin_ind < n_bins; bin_ind ++) {
-        glp_set_obj_coef(prob, n_objects*n_bins+bin_ind +1, 1.);
-    }
-
-
-    // constraints
-
-    unsigned int n_constraints = n_objects + n_bins;  
-    glp_add_rows(prob, n_constraints);
-
-    // an object is placed once and only once in a bin
-    for(unsigned int i = 0; i < n_objects; i++) {
-        glp_set_row_bnds(prob, i +1, GLP_FX, 1.0, 1.0);
-    }
-
-    // the sum of the object sizes do not exceed the bin size
-    for(unsigned int i = 0; i < n_bins; i++) {
-        glp_set_row_bnds(prob, n_objects+i +1, GLP_UP, 0.0, 0.0);
-    }
-
-    // sparse constraint matrix
-
-    unsigned int n_sparse = n_objects*n_bins + n_bins*(n_objects+1);
-
-    int* ia = new int[n_sparse+1]; // row
-    int* ja = new int[n_sparse+1]; // col
-    double* ar = new double[n_sparse+1]; // value
-
-    // an object is placed once and only once in a bin
-    int index = 1;
-    for(unsigned int obj_ind = 0; obj_ind < n_objects; obj_ind ++) {
-        for(unsigned int bin_ind = 0; bin_ind < n_bins; bin_ind ++) {
-
-            ia[index] = obj_ind +1;
-            ja[index] = n_bins*obj_ind+bin_ind +1;
-            ar[index] = 1.;
-            index += 1;
+    // update the values with the bin
+    for(auto& obj_ind: bin.objs) {
+        if(to_insert[obj_ind] == 1) {
+            n_obj_rem --;
         }
+        length_rem -= _instance.objects[obj_ind].size;
+        to_insert[obj_ind] --;
     }
+}
 
-    // the sum of the object sizes do not exceed the bin size
-    for(unsigned int bin_ind = 0; bin_ind < n_bins; bin_ind ++) {
-        int temp_ind = 0; // index relative to object quantities
-        for(unsigned int obj_ind = 0; obj_ind < _instance.n_obj(); obj_ind ++) {
-            for(unsigned int obj_nb = 1; obj_nb <= _instance.objects[obj_ind].nb; obj_nb ++) {
-                ia[index] = n_objects + bin_ind +1; 
-                ja[index] = n_bins*temp_ind+bin_ind +1;
-                ar[index] = static_cast<double>(_instance.objects[obj_ind].size);
-                index ++;
-                temp_ind ++;
-            }
+//---------------------------------------------------------
+void Solver::update_sol_remove(Bin& bin, vector<int>& to_insert, int& n_obj_rem, double& length_rem) {
+    
+    // update the values with the bin
+    for(auto& obj_ind: bin.objs) {
+        if(to_insert[obj_ind] == 0) {
+            n_obj_rem ++;
         }
-        ia[index] = n_objects + bin_ind +1; 
-        ja[index] = n_objects*n_bins+bin_ind +1;
-        ar[index] = 0.;
-        ar[index] = -static_cast<double>(_instance.bin_size);
-        index ++;
+        length_rem += _instance.objects[obj_ind].size;
+        to_insert[obj_ind] ++;
     }
-
-    // debug
-    // vector<vector<double>> cst(n_constraints);
-    // for(auto i = 0; i < cst.size(); i ++) {
-    //     cst[i].resize(n_var, 0.);
-    // }
-    // for(int i = 1; i <= n_sparse; i ++) {
-    //     int row = ia[i]-1;
-    //     int col = ja[i]-1;
-    //     double val = ar[i];
-    //     cst[row][col] = val;
-    // }
-    // for(auto row: cst) {
-    //     for(auto elt: row) {
-    //         cout << elt << " ";
-    //     }
-    //     cout << endl;
-    // }
-
-    glp_load_matrix(prob, n_sparse, ia, ja, ar);
-
-    // glp_write_lp(prob, NULL, "bin_packing.lp");
-
-    // solve the problem
-    glp_iocp param;
-    glp_init_iocp(&param);
-    int res = glp_simplex(prob, NULL);
-
-    double optimal_value = -1.;
-
-    int state = glp_get_status(prob);
-    if(state != GLP_NOFEAS) {
-        optimal_value = glp_get_obj_val(prob);
-        cout << "linear relaxation with glpk: " << optimal_value << endl;
-    }
-
-
-    // free the memory
-
-    delete[] ia;
-    delete[] ja;
-    delete[] ar;
-
-    glp_delete_prob(prob);
-
-
-
-    return static_cast<unsigned int>(ceil(optimal_value));
-
 }
 
 
 //---------------------------------------------------------
-unsigned int Solver::linear_relaxation_glpk_v2(Bins& bins) {
+unsigned int Solver::solve_bins(Bins& bins) {
 
+    // tree search on the bin patterns
 
-    glp_prob* prob;
-    prob = glp_create_prob();
-    glp_set_prob_name(prob, "Bin packing lr v2");
-    glp_set_obj_dir(prob, GLP_MIN);
-
-    // variables
-    // n_bins variables x
-
-    unsigned int n_var = static_cast<int>(bins.bins.size());
-    glp_add_cols(prob, n_var);
-    for(unsigned int i = 0; i < n_var; i++) {
-        glp_set_col_bnds(prob, i +1, GLP_LO, 0.0, 0.0);
-        glp_set_col_kind(prob, i +1, GLP_CV);
+    vector<int> to_insert(_instance.n_obj(), 0);
+    for(unsigned int obj_ind = 0; obj_ind < to_insert.size(); obj_ind ++) {
+        to_insert[obj_ind] += _instance.objects[obj_ind].nb;
     }
 
-    // objective function coefficients     
-    for(unsigned int ind = 0; ind < n_var; ind ++) {
-        glp_set_obj_coef(prob, ind +1, 1.);
+    int n_obj_rem = _instance.n_obj();
+    double length_rem = 0.; // linear relaxation
+    for(unsigned int obj_ind = 0; obj_ind < to_insert.size(); obj_ind ++) {
+        length_rem += _instance.objects[obj_ind].nb*_instance.objects[obj_ind].size;
     }
 
+    list<unsigned int> sol;
+    sol.push_back(0); // add the first bin
 
-    // constraints: 1 constraint per object type
-    unsigned int n_constraints = _instance.n_obj();  
-    glp_add_rows(prob, n_constraints);
+    // update the values with the first bin
+    update_sol_add(bins.bins[0], to_insert, n_obj_rem, length_rem);
 
-    // the sum of the object sizes do not exceed the bin size
-    for(unsigned int obj_ind = 0; obj_ind < _instance.n_obj(); obj_ind++) {
-        glp_set_row_bnds(prob, obj_ind +1, GLP_LO, static_cast<double>(_instance.objects[obj_ind].nb), 0.0);
-    }
+    Bounds bounds(_instance);
 
-    // sparse constraint matrix
-    unsigned int n_sparse = 0;
-    for(unsigned int bin_ind = 0; bin_ind <= bins.bins.size(); bin_ind ++) {
-        set<int> unique_objs;
-        unique_objs.insert(bins.bins[bin_ind].objs.begin(), bins.bins[bin_ind].objs.end());
-        n_sparse += static_cast<unsigned int>(unique_objs.size()); // one coefficient per object per bin
-    }
+    unsigned int best_val = bounds.best_fit();
 
-    int* ia = new int[n_sparse+1]; // row
-    int* ja = new int[n_sparse+1]; // col
-    double* ar = new double[n_sparse+1]; // value
+    unsigned int max_depth = best_val;
 
-    int index = 1;
+    bool stop = false;
 
-    // an object is placed once and only once in a bin
-    for(unsigned int obj_ind = 0; obj_ind < _instance.n_obj(); obj_ind ++) {
-        for(unsigned int bin_ind = 0; bin_ind < bins.bins.size(); bin_ind ++) {
-            unsigned int n_occ = 0;
-            for(auto& obj: bins.bins[bin_ind].objs) {
-                if(static_cast<unsigned int>(obj) == obj_ind) {
-                    n_occ ++;
+    unsigned int n_nodes = 0;
+
+    while(!stop) {
+
+        n_nodes ++;
+
+        // if(n_nodes % 1000 == 0) {
+        //     cout << "n nodes" << n_nodes << endl;
+        //     cout << "current best: " << best_val << endl;
+        // }
+
+        bool backtrack = false;
+
+        cout << n_obj_rem << endl;
+        cout << "current sol: ";
+        for(auto& elt: sol) {
+            cout << elt << ", ";
+        }
+        cout << endl;
+
+        if(n_obj_rem > 0) { // exploration part
+
+            if(sol.size() < max_depth) {
+
+                // bounding
+
+                // linear relaxation v1
+                double lower_bound = static_cast<unsigned int>(sol.size())+ceil(length_rem/_instance.bin_size);
+
+                if(lower_bound >= best_val) {
+                    backtrack = true;
+                    
+                } else { // exploration, add a new bin
+                    sol.push_back(sol.back());
+                    update_sol_add(bins.bins[sol.back()], to_insert, n_obj_rem, length_rem);
                 }
+
+            } else {
+                backtrack = true;
             }
-            if(n_occ > 0) {
-                ia[index] = obj_ind +1;
-                ja[index] = bin_ind +1;
-                ar[index] = static_cast<double>(n_occ);
-                index += 1;
+
+        } else {
+
+            cout << sol.size() << endl;
+
+            // a solution is found
+            if(sol.size() < best_val) {
+                best_val = static_cast<unsigned int>(sol.size());
+                max_depth = best_val; // update the maximum depth
+
+                cout << "new best: " << best_val << endl;
+
             }
+
+            backtrack = true;
+        }
+
+
+        if(backtrack) {
+            while(backtrack) {
+
+                if(sol.size() > 0) { // remove the last added
+
+                    unsigned int last_added = sol.back();
+                    
+                    sol.pop_back();
+                    update_sol_remove(bins.bins[last_added], to_insert, n_obj_rem, length_rem);
+
+                    if(last_added < bins.bins.size()-1) {
+                        sol.push_back(last_added+1);
+                        update_sol_add(bins.bins[last_added+1], to_insert, n_obj_rem, length_rem);
+                        backtrack = false;
+                    }
+
+                } else {
+
+                    backtrack = false;
+                    stop = true; // the search is terminated
+                
+                }
+                
+            }
+
         }
 
     }
 
-    // debug
-    // vector<vector<double>> cst(n_constraints);
-    // for(auto i = 0; i < cst.size(); i ++) {
-    //     cst[i].resize(n_var, 0.);
-    // }
-    // for(int i = 1; i <= n_sparse; i ++) {
-    //     int row = ia[i]-1;
-    //     int col = ja[i]-1;
-    //     double val = ar[i];
-    //     cst[row][col] = val;
-    // }
-    // for(auto row: cst) {
-    //     for(auto elt: row) {
-    //         cout << elt << " ";
-    //     }
-    //     cout << endl;
-    // }
+    cout << "n nodes explored: " << n_nodes << endl;
 
-    glp_load_matrix(prob, n_sparse, ia, ja, ar);
-
-    glp_write_lp(prob, NULL, "bin_packing.lp");
-
-    // solve the problem
-    glp_iocp param;
-    glp_init_iocp(&param);
-    int res = glp_simplex(prob, NULL);
-
-    double optimal_value = -1.;
-
-    int state = glp_get_status(prob);
-    if(state != GLP_NOFEAS) {
-        optimal_value = glp_get_obj_val(prob);
-        cout << "linear relaxation with glpk v2: " << optimal_value << endl;
-    }
-
-
-    // free the memory
-
-    delete[] ia;
-    delete[] ja;
-    delete[] ar;
-
-    glp_delete_prob(prob);
-
-
-
-    return static_cast<unsigned int>(ceil(optimal_value));
+    return best_val;
 
 }
