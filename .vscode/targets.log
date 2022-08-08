@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Aug  8 18:05:42 2022
+# Make data base, printed on Tue Aug  9 00:05:38 2022
 
 # Variables
 
@@ -99,7 +99,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 4321
+GIO_LAUNCHED_DESKTOP_FILE_PID = 39558
 # automatic
 %F = $(notdir $%)
 # environment
@@ -189,7 +189,7 @@ QT_ACCESSIBILITY = 1
 # environment
 DEFAULTS_PATH = /usr/share/gconf/ubuntu.default.path
 # makefile (from 'Makefile', line 5)
-OBJECTS_FILES = bounds.o solver.o bins.o instance.o main.o
+OBJECTS_FILES = heuristic.o bounds.o solver.o bins.o instance.o main.o
 # default
 MAKEFILES := 
 # automatic
@@ -215,7 +215,7 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 4321
+VSCODE_PID = 39558
 # variable set hash-table stats:
 # Load=102/1024=10%, Rehash=0, Collisions=12/128=9%
 
@@ -225,9 +225,9 @@ VSCODE_PID = 4321
 
 # Directories
 
-# . (device 66311, inode 13377591): 24 files, no impossibilities.
+# . (device 66311, inode 13377591): 27 files, no impossibilities.
 
-# 24 files, no impossibilities in 1 directories.
+# 27 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -264,9 +264,15 @@ all:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-08-08 18:05:33.38262579
+#  Last modified 2022-08-08 22:55:07.774129103
 #  File has been updated.
 #  Successfully updated.
+
+# Not a target:
+heuristic.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 .DEFAULT:
@@ -280,10 +286,9 @@ clean:
 #  File does not exist.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 17):
- 
 	@rm -rf *.o main
 
-main: bounds.o solver.o bins.o instance.o main.o
+main: heuristic.o bounds.o solver.o bins.o instance.o main.o
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -315,19 +320,20 @@ bins.o:
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=12/1024=1%, Rehash=0, Collisions=0/29=0%
+ 
+# Load=13/1024=1%, Rehash=0, Collisions=0/31=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 34 / storage = 299 B / avg = 8 B
-# current buf: size = 8162 B / used = 299 B / count = 34 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 37 / storage = 339 B / avg = 9 B
+# current buf: size = 8162 B / used = 339 B / count = 37 / avg = 9 B
 
-# strcache performance: lookups = 50 / hit rate = 32%
+# strcache performance: lookups = 54 / hit rate = 31%
 # hash-table stats:
-# Load=34/8192=0%, Rehash=0, Collisions=1/50=2%
-# Finished Make data base on Mon Aug  8 18:05:42 2022
+# Load=37/8192=0%, Rehash=0, Collisions=1/54=2%
+# Finished Make data base on Tue Aug  9 00:05:38 2022
 
  

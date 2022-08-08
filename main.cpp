@@ -23,7 +23,7 @@ int main() {
 
     // instance.loadFromFile("instances/A/A10.dat");
 
-    instance.loadFromFile("instances/A/A6.dat");
+    instance.loadFromFile("instances/A/A5.dat");
 
 
     instance.display();
@@ -31,7 +31,7 @@ int main() {
     Bins bins(instance);
     bins.enumerate();
     bins.display();
-    // cout << endl;
+    cout << endl;
 
     Bounds bounds(instance);
 
@@ -41,14 +41,19 @@ int main() {
     double linear_relaxation = bounds.linear_relaxation();
     cout << "linear relaxation: " << linear_relaxation << " (" << ceil(linear_relaxation) << ")" << endl << endl;
 
-    double optimal_value = bounds.linear_relaxation_glpk(heuristic_value);
-    cout << "linear relaxation with glpk: " << optimal_value << " (" << ceil(optimal_value) << ")" << endl << endl;
+    linear_relaxation = bounds.linear_relaxation_glpk(heuristic_value);
+    cout << "linear relaxation with glpk: " << linear_relaxation << " (" << ceil(linear_relaxation) << ")" << endl << endl;
 
-    optimal_value = bounds.linear_relaxation_glpk_v2(bins);
-    cout << "linear relaxation with glpk v2: " << optimal_value << " (" << ceil(optimal_value) << ")" << endl << endl;
+    linear_relaxation = bounds.linear_relaxation_glpk_v2(bins);
+    cout << "linear relaxation with glpk v2: " << linear_relaxation << " (" << ceil(linear_relaxation) << ")" << endl << endl;
 
 
     Solver solver(instance);
+
+    // unsigned int optimal_value = solver.solve_glpk_bins(bins);
+    // cout << "optimal solution with glpk v2: " << optimal_value << endl << endl;
+
+
     unsigned int best_val = solver.solve_bins(bins);
     cout << "optimal value: " << best_val << endl;
 

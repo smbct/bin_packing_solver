@@ -96,6 +96,12 @@ void Bins::display() {
             cout << bin.objs[ind] << ", ";
         }
         cout << ": " << (float)bin.size/(float)_instance.bin_size;
+
+        // cout << " ; obj occ: ";
+        // for(auto& elt: bin.objs_occ) {
+        //     cout << elt << ", ";
+        // }
+
         cout << endl;
     }
 

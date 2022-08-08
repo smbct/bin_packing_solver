@@ -2,7 +2,7 @@
 CC= g++
 CFLAGS= -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3
 
-OBJECTS_FILES= bounds.o solver.o bins.o instance.o main.o
+OBJECTS_FILES= heuristic.o bounds.o solver.o bins.o instance.o main.o
 
 main: $(OBJECTS_FILES)
 	$(CC) $(CFLAGS) $(OBJECTS_FILES) -lglpk -o main
