@@ -1,5 +1,11 @@
-make --dry-run --keep-going --print-directory
+make --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/samuel/programmation/bin_packing_solver'
-make: 'main' is up to date.
+g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 heuristic.cpp -c -o heuristic.o
+g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 bounds.cpp -c -o bounds.o
+g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 solver.cpp -c -o solver.o
+g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 bins.cpp -c -o bins.o
+g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 instance.cpp -c -o instance.o
+g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 main.cpp -c -o main.o
+g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 heuristic.o bounds.o solver.o bins.o instance.o main.o -lglpk -o main
 make: Leaving directory '/home/samuel/programmation/bin_packing_solver'
  
