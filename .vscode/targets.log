@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Aug  9 00:05:38 2022
+# Make data base, printed on Tue Aug  9 13:46:29 2022
 
 # Variables
 
@@ -49,7 +49,7 @@ _ = /usr/share/code/code
 # makefile (from 'Makefile', line 3)
 CFLAGS = -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3
 # environment
-JOURNAL_STREAM = 8:63332
+JOURNAL_STREAM = 8:66842
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile (from 'Makefile', line 1)
@@ -69,7 +69,7 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 PERL_MM_OPT = INSTALL_BASE=/home/samuel/perl5
 # environment
-MANAGERPID = 2836
+MANAGERPID = 2841
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -81,7 +81,7 @@ PATH = /usr/local/texlive/2022/bin/x86_64-linux:/home/samuel/.local/bin:/home/sa
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/samuel-XPS-15-9510:@/tmp/.ICE-unix/3061,unix/samuel-XPS-15-9510:/tmp/.ICE-unix/3061
+SESSION_MANAGER = local/samuel-XPS-15-9510:@/tmp/.ICE-unix/3064,unix/samuel-XPS-15-9510:/tmp/.ICE-unix/3064
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -89,7 +89,7 @@ XDG_MENU_PREFIX = gnome-
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = c32a64975ac34cbf8a0e9c7c730202f2
+INVOCATION_ID = 8aedf708ba414864a7259cf0325a1bde
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -99,7 +99,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 39558
+GIO_LAUNCHED_DESKTOP_FILE_PID = 17317
 # automatic
 %F = $(notdir $%)
 # environment
@@ -111,7 +111,7 @@ PWD = /home/samuel/programmation/bin_packing_solver
 # environment
 GEM_HOME = /home/samuel/gems
 # environment
-SSH_AGENT_PID = 3021
+SSH_AGENT_PID = 3026
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -215,7 +215,7 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-VSCODE_PID = 39558
+VSCODE_PID = 17317
 # variable set hash-table stats:
 # Load=102/1024=10%, Rehash=0, Collisions=12/128=9%
 
@@ -228,6 +228,7 @@ VSCODE_PID = 39558
 # . (device 66311, inode 13377591): 27 files, no impossibilities.
 
 # 27 files, no impossibilities in 1 directories.
+ 
 
 # Implicit Rules
 
@@ -320,7 +321,6 @@ bins.o:
 #  File has not been updated.
 
 # files hash-table stats:
- 
 # Load=13/1024=1%, Rehash=0, Collisions=0/31=0%
 # VPATH Search Paths
 
@@ -334,6 +334,6 @@ bins.o:
 # strcache performance: lookups = 54 / hit rate = 31%
 # hash-table stats:
 # Load=37/8192=0%, Rehash=0, Collisions=1/54=2%
-# Finished Make data base on Tue Aug  9 00:05:38 2022
+# Finished Make data base on Tue Aug  9 13:46:29 2022
 
  

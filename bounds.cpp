@@ -17,9 +17,9 @@ Bounds::Bounds(Instance& instance) : _instance(instance) {
 }
 
 //---------------------------------------------------------
-unsigned int Bounds::best_fit() {
+unsigned int Bounds::best_fit(vector<Bin>* solution) {
 
-    vector<Bin> solution;
+    vector<Bin> sol;
 
     vector<int> sorted_objects(_instance.n_obj());
     std::iota(sorted_objects.begin(), sorted_objects.end(), 0);
@@ -39,30 +39,32 @@ unsigned int Bounds::best_fit() {
             // look for the most filled bin able to contain the object
             int best_bin = -1;
 
-            for(unsigned int bin_ind = 0; bin_ind < solution.size(); bin_ind ++) {
-                if(_instance.bin_size - solution[bin_ind].size >= _instance.objects[obj_ind].size) {
-                    if(best_bin == -1 || solution[bin_ind].size > solution[best_bin].size) {
+            for(unsigned int bin_ind = 0; bin_ind < sol.size(); bin_ind ++) {
+                if(_instance.bin_size - sol[bin_ind].size >= _instance.objects[obj_ind].size) {
+                    if(best_bin == -1 || sol[bin_ind].size > sol[best_bin].size) {
                         best_bin = bin_ind;
                     }
                 }
             }
 
             if(best_bin != -1) { // the best been is updated
-                solution[best_bin].size += _instance.objects[obj_ind].size;
-                solution[best_bin].objs.push_back(obj_ind); 
+                sol[best_bin].size += _instance.objects[obj_ind].size;
+                sol[best_bin].objs.push_back(obj_ind); 
             } else { // a new bin is open
-                solution.push_back(Bin());
-                solution.back().size = _instance.objects[obj_ind].size;
-                solution.back().objs.push_back(obj_ind);
+                sol.push_back(Bin());
+                sol.back().size = _instance.objects[obj_ind].size;
+                sol.back().objs.push_back(obj_ind);
             }
 
 
         }
     }
 
-    
+    if(solution != nullptr) {
+        *solution = sol;
+    }
 
-    return static_cast<unsigned int>(solution.size());
+    return static_cast<unsigned int>(sol.size());
 
 }
 
