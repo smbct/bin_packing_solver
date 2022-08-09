@@ -73,6 +73,10 @@ unsigned int Solver::identify_next_bin(vector<int>& to_insert, Bins& bins, unsig
 //---------------------------------------------------------
 bool Solver::test_remaining_objects(vector<int>& to_insert, Bins& bins, unsigned int remaining_bins, unsigned int bin_index) {
 
+    // doubt on this function
+
+    // issue: with depth = best-1, more nodes are explored than with depth_best
+
     bool res = true;
 
     for(unsigned int obj_ind = 0; obj_ind < _instance.n_obj(); obj_ind ++) {
@@ -95,7 +99,7 @@ bool Solver::test_remaining_objects(vector<int>& to_insert, Bins& bins, unsigned
                 res = false;
                 break;
             }
-            
+
         }
 
     }
@@ -110,9 +114,12 @@ unsigned int Solver::solve_bins(Bins& bins) {
     // tree search on the bin patterns
 
     vector<int> to_insert(_instance.n_obj(), 0);
+
     for(unsigned int obj_ind = 0; obj_ind < to_insert.size(); obj_ind ++) {
         to_insert[obj_ind] += _instance.objects[obj_ind].nb;
     }
+
+
 
     int n_obj_rem = _instance.n_obj();
     double length_rem = 0.; // linear relaxation
@@ -204,7 +211,6 @@ unsigned int Solver::solve_bins(Bins& bins) {
                         backtrack = true;
                     }
                     
-
                 }
 
             } else {
@@ -220,7 +226,7 @@ unsigned int Solver::solve_bins(Bins& bins) {
                 best_val = static_cast<unsigned int>(sol.size());
                 max_depth = best_val-1; // update the maximum depth
 
-                cout << "new best: " << best_val << endl;
+                // cout << "new best: " << best_val << endl;
 
                 if(best_val == initial_lower_bound) {
                     stop = true;
@@ -242,7 +248,8 @@ unsigned int Solver::solve_bins(Bins& bins) {
                     sol.pop_back();
                     update_sol_remove(bins.bins[last_added], to_insert, n_obj_rem, length_rem);
 
-                    if(last_added < bins.bins.size()-1) {
+                    // make sure the sol size does not exceed the max depth (potentially updated) and that there is a next item to test 
+                    if(sol.size() < max_depth && last_added < bins.bins.size()-1) {
 
                         // look for the next bin that can contribute to the solution (only adding necessary objects)
                         // unsigned int candidate_bin = identify_next_bin(to_insert, bins, last_added+1);
@@ -315,7 +322,7 @@ unsigned int Solver::solve_glpk_bins(Bins& bins) {
 
     // sparse constraint matrix
     unsigned int n_sparse = 0;
-    for(unsigned int bin_ind = 0; bin_ind <= bins.bins.size(); bin_ind ++) {
+    for(unsigned int bin_ind = 0; bin_ind < bins.bins.size(); bin_ind ++) {
         set<int> unique_objs;
         unique_objs.insert(bins.bins[bin_ind].objs.begin(), bins.bins[bin_ind].objs.end());
         n_sparse += static_cast<unsigned int>(unique_objs.size()); // one coefficient per object per bin
@@ -330,16 +337,10 @@ unsigned int Solver::solve_glpk_bins(Bins& bins) {
     // an object is placed once and only once in a bin
     for(unsigned int obj_ind = 0; obj_ind < _instance.n_obj(); obj_ind ++) {
         for(unsigned int bin_ind = 0; bin_ind < bins.bins.size(); bin_ind ++) {
-            unsigned int n_occ = 0;
-            for(auto& obj: bins.bins[bin_ind].objs) {
-                if(static_cast<unsigned int>(obj) == obj_ind) {
-                    n_occ ++;
-                }
-            }
-            if(n_occ > 0) {
+            if(bins.bins[bin_ind].objs_occ[obj_ind] > 0) {
                 ia[index] = obj_ind +1;
                 ja[index] = bin_ind +1;
-                ar[index] = static_cast<double>(n_occ);
+                ar[index] = static_cast<double>(bins.bins[bin_ind].objs_occ[obj_ind]);
                 index += 1;
             }
         }
@@ -383,7 +384,7 @@ unsigned int Solver::solve_glpk_bins(Bins& bins) {
     if(state != GLP_NOFEAS) {
         optimal_value = glp_mip_obj_val(prob);
         
-        cout << "optimal value with glpk v2: " << optimal_value << endl;
+        // cout << "optimal value with glpk v2: " << optimal_value << endl;
 
         // cout << "bin usage: ";
         // for(unsigned int var_ind = 0; var_ind < n_var; var_ind ++) {

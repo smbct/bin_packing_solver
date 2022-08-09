@@ -5,6 +5,7 @@
 #include <numeric>
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 
 #include <glpk.h>
 
@@ -243,7 +244,6 @@ double Bounds::linear_relaxation_glpk_v2(Bins& bins) {
         glp_set_obj_coef(prob, ind +1, 1.);
     }
 
-
     // constraints: 1 constraint per object type
     unsigned int n_constraints = _instance.n_obj();  
     glp_add_rows(prob, n_constraints);
@@ -255,7 +255,7 @@ double Bounds::linear_relaxation_glpk_v2(Bins& bins) {
 
     // sparse constraint matrix
     unsigned int n_sparse = 0;
-    for(unsigned int bin_ind = 0; bin_ind <= bins.bins.size(); bin_ind ++) {
+    for(unsigned int bin_ind = 0; bin_ind < bins.bins.size(); bin_ind ++) {
         set<int> unique_objs;
         unique_objs.insert(bins.bins[bin_ind].objs.begin(), bins.bins[bin_ind].objs.end());
         n_sparse += static_cast<unsigned int>(unique_objs.size()); // one coefficient per object per bin
@@ -265,21 +265,16 @@ double Bounds::linear_relaxation_glpk_v2(Bins& bins) {
     int* ja = new int[n_sparse+1]; // col
     double* ar = new double[n_sparse+1]; // value
 
+
     int index = 1;
 
     // an object is placed once and only once in a bin
     for(unsigned int obj_ind = 0; obj_ind < _instance.n_obj(); obj_ind ++) {
         for(unsigned int bin_ind = 0; bin_ind < bins.bins.size(); bin_ind ++) {
-            unsigned int n_occ = 0;
-            for(auto& obj: bins.bins[bin_ind].objs) {
-                if(static_cast<unsigned int>(obj) == obj_ind) {
-                    n_occ ++;
-                }
-            }
-            if(n_occ > 0) {
+            if(bins.bins[bin_ind].objs_occ[obj_ind] > 0) {
                 ia[index] = obj_ind +1;
                 ja[index] = bin_ind +1;
-                ar[index] = static_cast<double>(n_occ);
+                ar[index] = static_cast<double>(bins.bins[bin_ind].objs_occ[obj_ind]);
                 index += 1;
             }
         }
@@ -380,7 +375,7 @@ void Bounds::init_glpk_relaxation_v2(glp_prob* prob, Bins& bins) {
 
     // sparse constraint matrix
     unsigned int n_sparse = 0;
-    for(unsigned int bin_ind = 0; bin_ind <= bins.bins.size(); bin_ind ++) {
+    for(unsigned int bin_ind = 0; bin_ind < bins.bins.size(); bin_ind ++) {
         set<int> unique_objs;
         unique_objs.insert(bins.bins[bin_ind].objs.begin(), bins.bins[bin_ind].objs.end());
         n_sparse += static_cast<unsigned int>(unique_objs.size()); // one coefficient per object per bin
