@@ -29,6 +29,9 @@ class Bins {
         // display the bins
         void display();
 
+        // return the index of the bin corresponding to the bin given in argument
+        unsigned int identify_bin(Bin& bin);
+
     public:
 
         std::vector<Bin> bins;

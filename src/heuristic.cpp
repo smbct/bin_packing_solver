@@ -14,7 +14,7 @@ HSolution::HSolution(Instance& instance, Bins& bins):  _instance(instance), _bin
 }
 
 //---------------------------------------------------------
-void HSolution::init(vector<unsigned int>& new_sol) {
+void HSolution::init(vector<int>& new_sol) {
     
     sol = new_sol;
 
@@ -25,9 +25,8 @@ void HSolution::init(vector<unsigned int>& new_sol) {
     for(unsigned int bin_ind = 0; bin_ind < _bins.bins.size(); bin_ind ++) {
         if(sol[bin_ind] > 0) {
             for(auto& obj_ind: _bins.bins[bin_ind].objs) {
-                to_insert[obj_ind] --;
+                to_insert[obj_ind] -= sol[bin_ind];
             }
-
         }
     }
 
@@ -65,13 +64,28 @@ void HSolution::init(vector<unsigned int>& new_sol) {
 
 //---------------------------------------------------------
 double HSolution::compute_cost() {
-    return n_bins + (!feasible)*50.;
+    return static_cast<double>(n_bins) + 2.5*static_cast<double>(n_remaining);
 }
 
 //---------------------------------------------------------
 void HSolution::update(unsigned int bin_ind, int delta) {
 
     sol[bin_ind] += delta;
+    
+    if(sol[bin_ind] <= 0 && sol[bin_ind]-delta <= 0) {
+        delta = 0;
+    } else {
+        if(sol[bin_ind]-delta <= 0 && sol[bin_ind] >= 0) { // switch from negative to positive value
+            delta += sol[bin_ind]-delta;
+        } else if(sol[bin_ind]-delta >= 0 && sol[bin_ind] <= 0) { // switch from positive to negative value
+            delta -= sol[bin_ind];
+        }
+    }
+
+    if(delta == 0) {
+        return;
+    }
+    
     n_bins += delta;
 
     // delta > 0: some bins are added
@@ -109,7 +123,7 @@ void HSolution::update(unsigned int bin_ind, int delta) {
     }
 
     // update the cost
-    compute_cost();
+    cost = compute_cost();
 
 }
 
@@ -127,10 +141,31 @@ void HSolution::display() {
     for(auto& val: to_insert) {
         cout << val << ", ";
     }
+    cout << endl;
     cout << "n bins: " << n_bins << endl;
+    cout << "n remaining: " << n_remaining << endl;
     cout << "feasible ? " << (feasible ? "true" : "false") << endl;
     cout << "cost: " << cost << endl;
+    cout << "cost recomputed: " << n_bins + n_remaining << endl;
 
+}
+
+//---------------------------------------------------------
+HSolution& HSolution::operator=(const HSolution& other) {
+    
+    to_insert = other.to_insert;
+    max_to_insert = other.max_to_insert;
+    min_to_insert = other.min_to_insert;
+
+    n_remaining = other.n_remaining;
+    size_remaining = other.size_remaining;
+
+    sol = other.sol;
+    n_bins = other.n_bins;
+    cost = other.cost;
+    feasible = other.feasible;
+
+    return *this;
 }
 
 //---------------------------------------------------------
@@ -143,34 +178,56 @@ LocalSearch::LocalSearch(Instance& instance, Bins& bins): _instance(instance), _
 void LocalSearch::solve() {
 
     Bounds bounds(_instance);
-    unsigned int best_val = bounds.best_fit();
 
-    cout << "test 1" << endl;
+    vector<int> init_sol(_bins.bins.size(), 0);
 
-    bool stop = false;
-
-    vector<unsigned int> init_sol(_bins.bins.size(), 0);
-
-    cout << "test 2" << endl;
-
+    vector<Bin> best_fit_sol;
+    unsigned int best_val = bounds.best_fit(&best_fit_sol);
+    cout << "best fit sol size: " << best_fit_sol.size() << endl;
+    for(auto& bin: best_fit_sol) {
+        unsigned int bin_ind = _bins.identify_bin(bin);
+        init_sol[bin_ind] ++;
+    }
 
     HSolution solution(_instance, _bins);
-
-    cout << "test 3" << endl;
-
-
     solution.init(init_sol);
-
-    cout << "test 4" << endl;
-
-
     solution.display();
 
+    HSolution best_sol(_instance, _bins);
+    best_sol = solution;
+
+    // strategy: remove as many bins as possible until removing any of the bins make the solution infeasible
+    // then re-add multiple bins to start from a new point
+
+    // randomization in removing the bins
+
+    // randomization in adding new bins
+
+    bool stop = false;
     while(!stop) {
 
-        stop = true;
+        bool improvement = false;
+        unsigned int best_bin = 0;
+        double best_cost = solution.cost;
+
+        for(unsigned int bin_ind = 0; bin_ind < _bins.bins.size(); bin_ind ++) {
+
+        }
+
+        if(improvement && best_cost < solution.cost) {
+            
+        } else {
+            stop = true;
+        }
+
+        solution.display();
+        cout << endl << endl;
+
+        // stop = true;
 
     }
 
+    cout << "best cost: " << solution.cost << endl;
+    solution.display();
 
 }

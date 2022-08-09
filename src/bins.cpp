@@ -111,3 +111,49 @@ void Bins::display() {
 unsigned int Bins::n_bins() {
     return static_cast<unsigned int>(bins.size());
 }
+
+//---------------------------------------------------------
+unsigned int Bins::identify_bin(Bin& bin) {
+
+    unsigned int best_candidate = 0;
+    unsigned int best_nb_obj = 0;
+    bool init = false;
+
+    // the bin might not be full -> match with a pattern anyway
+    for(unsigned int bin_ind = 0; bin_ind < bins.size(); bin_ind ++) {
+
+        unsigned int nb_obj = static_cast<unsigned int>(bins[bin_ind].objs.size()); 
+        vector<int> occ(bins[bin_ind].objs_occ);
+
+        bool candidate = true;
+
+        for(auto& obj_ind: bin.objs) {
+            occ[obj_ind] --;
+            if(occ[obj_ind] == 0) {
+                nb_obj --;
+                if(nb_obj == 0) {
+                    break; // the exact bin has been found
+                }
+            } else if(occ[obj_ind] < 0) {
+                candidate = false;
+                break;
+            }
+        }
+
+        if(candidate) {
+            if(nb_obj == 0) { // the corresponding bin has been found
+                best_candidate = bin_ind;
+                break;
+            } else if(!init || nb_obj < best_nb_obj) { // the current bin is a candidate
+                init = true;
+                best_candidate = bin_ind;
+                best_nb_obj = nb_obj; 
+            }
+        } 
+
+
+    }
+
+    return best_candidate;
+
+}
