@@ -60,8 +60,8 @@ void Bins::enumerate() {
                     remaining_size += _instance.objects[pending.back()].size;
                     pending.pop_back();
 
-                    
                     bool new_found = false;
+                    
                     while(!new_found && next_obj < _instance.objects.size()) {
                         if(_instance.objects[next_obj].size <= remaining_size) {
                             new_found = true;

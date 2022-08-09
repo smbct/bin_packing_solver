@@ -10,6 +10,8 @@
 
 using namespace std;
 
+
+//---------------------------------------------------------
 void expe() {
 
     for(unsigned int ind = 4; ind <= 10; ind ++) {
@@ -71,6 +73,7 @@ void expe() {
 }
 
 
+//---------------------------------------------------------
 int main() {
 
     cout << "hello bin packing" << endl;
