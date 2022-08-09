@@ -2,16 +2,23 @@
 CC= g++
 CFLAGS= -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3
 
-OBJECTS_FILES= heuristic.o bounds.o solver.o bins.o instance.o main.o
+SRC_DIR= src
+OBJ_DIR= obj
 
-main: $(OBJECTS_FILES)
-	$(CC) $(CFLAGS) $(OBJECTS_FILES) -lglpk -o main
+SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp)
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-%.o: %.cpp %.hpp
+test: 
+	$(info $(SRC_FILES)) $(info $(OBJ_FILES))
+
+main: $(OBJ_FILES)
+	$(CC) $(CFLAGS) $(OBJ_FILES) -lglpk -o main
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(SRC_DIR)/%.hpp
 	$(CC) $(CFLAGS) $< -c -o $@
 
-%.o: %.cpp
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CC) $(CFLAGS) $< -c -o $@
 
 clean:
-	@rm -rf *.o main
+	@rm -rf $(OBJ_DIR)/*.o main
