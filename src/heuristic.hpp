@@ -14,7 +14,7 @@ class HSolution {
         HSolution(Instance& instance, Bins& bins);
 
         // initialize the data structure
-        void init(std::vector<unsigned int>& new_sol);
+        void init(std::vector<int>& new_sol);
 
         // update the solution by incrementing or decrementing the number of occurrences of a bin
         void update(unsigned int bin_ind, int delta);
@@ -24,6 +24,9 @@ class HSolution {
 
         // display the solution
         void display();
+
+        // copy
+        HSolution& operator=(const HSolution&);
 
     private:
 
@@ -40,7 +43,7 @@ class HSolution {
         int n_remaining; // number of object types which demand is not fulfilled
         double size_remaining; // remaining total object sizes to meet the demand
 
-        std::vector<unsigned int> sol;
+        std::vector<int> sol;
         unsigned int n_bins; // number of bins in the solution
         double cost; // solution cost
         bool feasible;
