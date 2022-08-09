@@ -14,7 +14,7 @@ class Bounds {
         Bounds(Instance& instance);
 
         // best fit heuristic
-        unsigned int best_fit();
+        unsigned int best_fit(std::vector<Bin>* solution = nullptr);
 
         // linear relaxation
         double linear_relaxation();

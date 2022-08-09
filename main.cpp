@@ -1,27 +1,20 @@
 #include <iostream>
+#include <cmath>
+#include <sstream>
 
 #include "instance.hpp"
-
 #include "bins.hpp"
-
 #include "solver.hpp"
-
-#include <cmath>
+#include "bounds.hpp"
+#include "heuristic.hpp"
 
 using namespace std;
-
-
-
-#include "bounds.hpp"
-
-#include <sstream>
 
 void expe() {
 
     for(unsigned int ind = 4; ind <= 10; ind ++) {
 
         // string filename = "instances/A/A";
-
         string filename = "instances/B/B";
 
 
@@ -82,8 +75,8 @@ int main() {
 
     cout << "hello bin packing" << endl;
 
-    expe();
-    return 0;
+    // expe();
+    // return 0;
 
     Instance instance;
     // instance.loadFromFile("instances/A/jouet1.dat");
@@ -117,14 +110,19 @@ int main() {
     cout << "linear relaxation with glpk v2: " << linear_relaxation << " (" << ceil(linear_relaxation) << ")" << endl << endl;
 
 
-    Solver solver(instance);
+    // Solver solver(instance);
 
-    unsigned int optimal_value = solver.solve_glpk_bins(bins);
-    cout << "optimal solution with glpk v2: " << optimal_value << endl << endl;
+    // unsigned int optimal_value = solver.solve_glpk_bins(bins);
+    // cout << "optimal solution with glpk v2: " << optimal_value << endl << endl;
 
 
-    unsigned int best_val = solver.solve_bins(bins);
-    cout << "optimal value: " << best_val << endl;
+    // unsigned int best_val = solver.solve_bins(bins);
+    // cout << "optimal value: " << best_val << endl;
+
+    cout << "Local serach:" << endl;
+    LocalSearch search(instance, bins);
+
+    search.solve();
 
     return 0;
 }

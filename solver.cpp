@@ -201,8 +201,8 @@ unsigned int Solver::solve_bins(Bins& bins) {
                 } else { // exploration, add a new bin
 
                     // as bellow, add only the bins that may be useful for filling the need
-                    // unsigned int candidate_bin = identify_next_bin(to_insert, bins, sol.back());
-                    unsigned int candidate_bin = sol.back();
+                    unsigned int candidate_bin = identify_next_bin(to_insert, bins, sol.back());
+                    // unsigned int candidate_bin = sol.back();
 
                     if(candidate_bin < bins.bins.size()) {
                         sol.push_back(candidate_bin);
@@ -252,8 +252,8 @@ unsigned int Solver::solve_bins(Bins& bins) {
                     if(sol.size() < max_depth && last_added < bins.bins.size()-1) {
 
                         // look for the next bin that can contribute to the solution (only adding necessary objects)
-                        // unsigned int candidate_bin = identify_next_bin(to_insert, bins, last_added+1);
-                        unsigned int candidate_bin = last_added+1;
+                        unsigned int candidate_bin = identify_next_bin(to_insert, bins, last_added+1);
+                        // unsigned int candidate_bin = last_added+1;
 
                         if(candidate_bin < bins.bins.size()) {
                             // sol.push_back(last_added+1);
@@ -404,6 +404,6 @@ unsigned int Solver::solve_glpk_bins(Bins& bins) {
     glp_delete_prob(prob);
 
 
-    return optimal_value;
+    return static_cast<unsigned int>(optimal_value);
 
 }
