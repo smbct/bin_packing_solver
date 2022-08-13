@@ -62,6 +62,9 @@ class LocalSearch {
         // constructor
         LocalSearch(Instance& instance, Bins& bins);
 
+        // add bins to the solution
+        void add_bins(HSolution& sol);
+
         // solving function
         void solve();
 

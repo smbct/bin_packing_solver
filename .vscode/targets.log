@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Aug  9 15:15:12 2022
+# Make data base, printed on Fri Aug 12 20:22:12 2022
 
 # Variables
 
@@ -37,19 +37,19 @@ XAUTHORITY = /run/user/1000/gdm/Xauthority
 # environment
 GDMSESSION = ubuntu
 # environment
-XMODIFIERS = @im
+XMODIFIERS = @im=ibus
 # makefile
 CURDIR := /home/samuel/programmation/bin_packing_solver
 # makefile
 SHELL = /bin/sh
 # environment
-VSCODE_NLS_CONFIG = {"locale":"fr","availableLanguages":{},"_languagePackSupport":true}
+VSCODE_NLS_CONFIG = {"locale":"fr","availableLanguages":{"*":"fr"},"_languagePackId":"c7e2ab29f04a1f7605fe59032ea1fa0d.fr","_translationsConfigFile":"/home/samuel/.config/Code/clp/c7e2ab29f04a1f7605fe59032ea1fa0d.fr/tcf.json","_cacheRoot":"/home/samuel/.config/Code/clp/c7e2ab29f04a1f7605fe59032ea1fa0d.fr","_resolvedLanguagePackCoreLocation":"/home/samuel/.config/Code/clp/c7e2ab29f04a1f7605fe59032ea1fa0d.fr/6d9b74a70ca9c7733b29f0456fd8195364076dda","_corruptedFile":"/home/samuel/.config/Code/clp/c7e2ab29f04a1f7605fe59032ea1fa0d.fr/corrupted.info","_languagePackSupport":true}
 # environment
-_ = /usr/bin/printenv
+_ = /usr/share/code/code
 # makefile (from 'Makefile', line 3)
 CFLAGS = -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3
 # environment
-JOURNAL_STREAM = 8:66842
+JOURNAL_STREAM = 8:68869
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile (from 'Makefile', line 1)
@@ -67,11 +67,11 @@ MANDATORY_PATH = /usr/share/gconf/ubuntu.mandatory.path
 # environment
 XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
 # environment
-DBUS_SESSION_BUS_ADDRESS = unix:path
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
-PERL_MM_OPT = INSTALL_BASE
+PERL_MM_OPT = INSTALL_BASE=/home/samuel/perl5
 # environment
-MANAGERPID = 2841
+MANAGERPID = 2747
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -81,11 +81,11 @@ MAKE_HOST := x86_64-pc-linux-gnu
 # makefile (from 'Makefile', line 9)
 OBJ_FILES := obj/heuristic.o obj/bins.o obj/bounds.o obj/main.o obj/instance.o obj/solver.o
 # environment
-PATH = /home/samuel/gems/bin:/home/samuel/perl5/bin:/usr/local/texlive/2022/bin/x86_64-linux:/home/samuel/.local/bin:/home/samuel/gems/bin:/home/samuel/perl5/bin:/home/samuel/.cargo/bin:/usr/local/texlive/2022/bin/x86_64-linux:/home/samuel/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /usr/local/texlive/2022/bin/x86_64-linux:/home/samuel/.local/bin:/home/samuel/gems/bin:/home/samuel/perl5/bin:/home/samuel/.cargo/bin:/usr/local/texlive/2022/bin/x86_64-linux:/home/samuel/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/samuel-XPS-15-9510:@/tmp/.ICE-unix/3064,unix/samuel-XPS-15-9510:/tmp/.ICE-unix/3064
+SESSION_MANAGER = local/samuel-XPS-15-9510:@/tmp/.ICE-unix/2971,unix/samuel-XPS-15-9510:/tmp/.ICE-unix/2971
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -93,17 +93,17 @@ XDG_MENU_PREFIX = gnome-
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = 8aedf708ba414864a7259cf0325a1bde
+INVOCATION_ID = f6686c7774ca457586183f327fa8366e
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
-LS_COLORS = rs
+LS_COLORS = 
 # environment
 XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 25101
+GIO_LAUNCHED_DESKTOP_FILE_PID = 8975
 # automatic
 %F = $(notdir $%)
 # environment
@@ -115,7 +115,7 @@ PWD = /home/samuel/programmation/bin_packing_solver
 # environment
 GEM_HOME = /home/samuel/gems
 # environment
-SSH_AGENT_PID = 3026
+SSH_AGENT_PID = 2932
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -129,11 +129,11 @@ PERL_MB_OPT = --install_base "/home/samuel/perl5"
 # environment
 LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
-PERL_LOCAL_LIB_ROOT = /home/samuel/perl5:/home/samuel/perl5
+PERL_LOCAL_LIB_ROOT = /home/samuel/perl5
 # environment
-PERL5LIB = /home/samuel/perl5/lib/perl5:/home/samuel/perl5/lib/perl5
+PERL5LIB = /home/samuel/perl5/lib/perl5
 # environment
-VSCODE_CODE_CACHE_PATH = /home/samuel/.config/Code/CachedData/3b889b090b5ad5793f524b5d1d39fda662b96a2a
+VSCODE_CODE_CACHE_PATH = /home/samuel/.config/Code/CachedData/6d9b74a70ca9c7733b29f0456fd8195364076dda
 # environment
 LOGNAME = samuel
 # environment
@@ -146,8 +146,6 @@ GNOME_DESKTOP_SESSION_ID = this-is-deprecated
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
 MAKELEVEL := 0
-# environment
-COLORTERM = truecolor
 # default
 MAKE = $(MAKE_COMMAND)
 # default
@@ -155,7 +153,7 @@ MAKECMDGOALS := all
 # environment
 QT_IM_MODULE = ibus
 # environment
-SHLVL = 1
+SHLVL = 0
 # makefile (from 'Makefile', line 2)
 CC = g++
 # environment
@@ -172,22 +170,18 @@ XDG_CURRENT_DESKTOP = Unity
 %D = $(patsubst %/,%,$(dir $%))
 # default
 MAKE_COMMAND := make
-# environment
-TERM_PROGRAM = vscode
 # default
 .VARIABLES := 
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-cc1a4416-1.69.2-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-cc1a4416-1.70.1-main.sock
 # makefile
 MAKEFLAGS = pqrR
 # environment
 MFLAGS = -pqrR
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
-# environment
-TERM_PROGRAM_VERSION = 1.69.2
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -227,11 +221,9 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LANG = C
 # environment
-TERM = xterm-256color
-# environment
-VSCODE_PID = 25101
+VSCODE_PID = 8975
 # variable set hash-table stats:
-# Load=109/1024=11%, Rehash=0, Collisions=12/144=8%
+# Load=105/1024=10%, Rehash=0, Collisions=12/140=9%
 
 # Pattern-specific Variable Values
 
@@ -239,10 +231,10 @@ VSCODE_PID = 25101
 
 # Directories
 
-# . (device 66311, inode 13377591): 10 files, no impossibilities.
+# . (device 66311, inode 13377591): 11 files, no impossibilities.
 # src (device 66311, inode 13377716): 13 files, no impossibilities.
 
-# 23 files, no impossibilities in 2 directories.
+# 24 files, no impossibilities in 2 directories.
 
 # Implicit Rules
 
@@ -309,7 +301,6 @@ obj/heuristic.o:
 #  File has not been updated.
 
 clean:
- 
 #  Phony target (prerequisite of .PHONY).
 #  Implicit rule search has not been done.
 #  File does not exist.
@@ -325,6 +316,7 @@ obj/bounds.o:
 
 # Not a target:
 obj/solver.o:
+ 
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -353,9 +345,9 @@ obj/instance.o:
 # strcache buffers: 1 (0) / strings = 39 / storage = 373 B / avg = 9 B
 # current buf: size = 8162 B / used = 373 B / count = 39 / avg = 9 B
 
-# strcache performance: lookups = 53 / hit rate = 26%
+# strcache performance: lookups = 54 / hit rate = 27%
 # hash-table stats:
-# Load=39/8192=0%, Rehash=0, Collisions=2/53=4%
-# Finished Make data base on Tue Aug  9 15:15:12 2022
+# Load=39/8192=0%, Rehash=0, Collisions=2/54=4%
+# Finished Make data base on Fri Aug 12 20:22:12 2022
 
  

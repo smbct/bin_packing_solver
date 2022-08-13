@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <sstream>
+#include <ctime>
 
 #include "instance.hpp"
 #include "bins.hpp"
@@ -78,6 +79,9 @@ int main() {
 
     cout << "hello bin packing" << endl;
 
+    // random seed init
+    srand(42);
+
     // expe();
     // return 0;
 
@@ -85,11 +89,11 @@ int main() {
     // instance.loadFromFile("instances/A/jouet1.dat");
     // instance.loadFromFile("instances/A/A4.dat");
 
-    // instance.loadFromFile("instances/A/A10.dat");
+    instance.loadFromFile("instances/A/A10.dat");
 
     // instance.loadFromFile("instances/A/A5.dat");
 
-    instance.loadFromFile("instances/A/A7.dat");
+    // instance.loadFromFile("instances/A/A7.dat");
 
     instance.display();
 
