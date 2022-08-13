@@ -37,6 +37,12 @@ class Bounds {
         // solve the already initialized glpk relaxation problem
         double solve_glpk_relaxation_v2(glp_prob* prob);
 
+        // linear relaxation in the bins based on column génération
+        double column_relaxation();
+
+        // solve the restricted master problem of the column generation method 
+        double col_rmp(std::vector<std::vector<int>>& bins, std::vector<double>& res);
+
     private:
 
         Instance& _instance;

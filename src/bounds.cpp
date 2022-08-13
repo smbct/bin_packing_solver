@@ -9,6 +9,8 @@
 
 #include <glpk.h>
 
+#include "knapsack.hpp"
+
 using namespace std;
 
 //---------------------------------------------------------
@@ -50,10 +52,13 @@ unsigned int Bounds::best_fit(vector<Bin>* solution) {
             if(best_bin != -1) { // the best been is updated
                 sol[best_bin].size += _instance.objects[obj_ind].size;
                 sol[best_bin].objs.push_back(obj_ind); 
+                sol[best_bin].objs_occ[obj_ind] ++;
             } else { // a new bin is open
                 sol.push_back(Bin());
                 sol.back().size = _instance.objects[obj_ind].size;
                 sol.back().objs.push_back(obj_ind);
+                sol.back().objs_occ.resize(_instance.n_obj(), 0);
+                sol.back().objs_occ[obj_ind] ++;
             }
 
 
@@ -199,7 +204,7 @@ double Bounds::linear_relaxation_glpk(unsigned int upper_bound) {
     glp_smcp param;
     glp_init_smcp(&param);
     param.msg_lev = GLP_MSG_OFF;
-    int res = glp_simplex(prob, &param);
+    /*int res = */glp_simplex(prob, &param);
 
     double optimal_value = -1.;
 
@@ -309,7 +314,7 @@ double Bounds::linear_relaxation_glpk_v2(Bins& bins) {
     glp_smcp param;
     glp_init_smcp(&param);
     param.msg_lev = GLP_MSG_OFF;
-    int res = glp_simplex(prob, &param);
+    /*int res = */glp_simplex(prob, &param);
 
     double optimal_value = -1.;
 
@@ -463,4 +468,178 @@ double Bounds::solve_glpk_relaxation_v2(glp_prob* prob) {
     }
 
     return relaxation;
+}
+
+
+
+// based on https://optimization.mccormick.northwestern.edu/index.php/Column_generation_algorithms
+//---------------------------------------------------------
+double Bounds::column_relaxation() {
+
+    // column generation approach to compute a lower bound on the optimal value without having to enumerate all the bins
+    // this implementation can be drastically improved by modifying the sub problem in glpk instead of recreating it
+
+    vector<int> obj_size(_instance.n_obj());
+    for(unsigned int obj_ind = 0; obj_ind < obj_size.size(); obj_ind ++) {
+        obj_size[obj_ind] = _instance.objects[obj_ind].size;
+    }
+
+    // init the columns from a best fit solution
+    
+    vector<Bin> init_sol;
+    /*unsigned int cost = */best_fit(&init_sol);
+
+    // identify unique bins
+    vector<vector<int>> bins;
+    for(auto& bin: init_sol) {
+        bool found = false;
+        for(unsigned int bin_ind = 0; bin_ind < bins.size(); bin_ind ++) {
+            if(bin.objs_occ == bins[bin_ind]) {
+                found = true;
+                break;
+            }
+        }
+        if(!found) {
+            bins.push_back(bin.objs_occ);
+        }
+    }
+
+    // cout << "initial columns: " << endl;
+    // for(auto& bin: bins) {
+    //     for(auto& occ: bin) {
+    //         cout << occ << ", ";
+    //     }
+    //     cout << endl;
+    // }
+    // cout << endl;
+
+    bool optimal = false;
+
+    double optimal_rmp;
+
+    while(!optimal) {
+
+        // solve the restricted master problem with the initial columns
+        vector<double> res;
+        optimal_rmp = col_rmp(bins, res);
+        // cout << "rmp optimal value: " << optimal_rmp << endl;
+
+        vector<int> new_col;
+
+        Knapsack knapsack;
+        double sub_optimal = 1.-knapsack.solve(res, obj_size, _instance.bin_size, new_col);
+        if(sub_optimal < -1e-6) {
+            bins.push_back(new_col);
+            // cout << "kp optimal: " << sub_optimal << endl;
+            // cout << "new col: ";
+            // for(auto& val: new_col) {
+            //     cout << val << ", ";
+            // }
+            // cout << endl;
+            // cout << "new columns matrix: " << endl;
+            // for(auto& bin: bins) {
+            //     for(auto& occ: bin) {
+            //         cout << occ << ", ";
+            //     }
+            //     cout << endl;
+            // }
+            // cout << endl;
+            // cout << endl;
+        } else {
+            optimal = true;
+        }
+
+    }
+
+    
+
+    return optimal_rmp;
+}
+
+
+//---------------------------------------------------------
+double Bounds::col_rmp(vector<vector<int>>& bins, vector<double>& res) {
+
+    // create and solve the master problem
+    glp_prob* prob;
+    prob = glp_create_prob();
+    glp_set_prob_name(prob, "Bin packing restricted master pb");
+    glp_set_obj_dir(prob, GLP_MAX);
+
+
+    // variables
+    // n_bins variables x
+    unsigned int n_var = static_cast<int>(_instance.n_obj());
+    glp_add_cols(prob, n_var);
+    for(unsigned int i = 0; i < n_var; i++) {
+        glp_set_col_bnds(prob, i +1, GLP_LO, 0.0, 0.0);
+        glp_set_col_kind(prob, i +1, GLP_CV);
+    }
+
+    // objective function coefficients: n objects    
+    for(unsigned int ind = 0; ind < n_var; ind ++) {
+        glp_set_obj_coef(prob, ind +1, static_cast<double>(_instance.objects[ind].nb));
+    }
+
+    // constraints: 1 constraint per bin (column)
+    unsigned int n_constraints = static_cast<unsigned int>(bins.size());  
+    glp_add_rows(prob, n_constraints);
+
+    for(unsigned int ind = 0; ind < bins.size(); ind++) {
+        glp_set_row_bnds(prob, ind +1, GLP_UP, 0.0, 1.0);
+    }
+
+    unsigned int n_sparse = 0;
+    for(auto& bin: bins) {
+        for(auto& occ: bin) {
+            if(occ > 0) {
+                n_sparse ++;
+            }
+        }
+    }
+    int* ia = new int[n_sparse+1]; // row
+    int* ja = new int[n_sparse+1]; // col
+    double* ar = new double[n_sparse+1]; // value
+
+    unsigned int index = 1;
+    for(unsigned int bin_ind = 0; bin_ind < bins.size(); bin_ind ++) {
+        for(unsigned int obj_ind = 0; obj_ind < _instance.n_obj(); obj_ind ++) {
+            if(bins[bin_ind][obj_ind] > 0) {
+                ia[index] = bin_ind+1;
+                ja[index] = obj_ind+1;
+                ar[index] = static_cast<double>(bins[bin_ind][obj_ind]);
+                index ++;
+            }
+        }
+    }
+
+    glp_load_matrix(prob, n_sparse, ia, ja, ar);
+
+    glp_smcp param;
+    glp_init_smcp(&param);
+    param.msg_lev = GLP_MSG_OFF;
+    glp_simplex(prob, &param);
+
+    double optimal_value = -1.;
+
+    int state = glp_get_status(prob);
+    if(state != GLP_NOFEAS) {
+        optimal_value = glp_get_obj_val(prob);
+
+        res.resize(_instance.n_obj());
+        for(unsigned int var_ind = 0; var_ind < n_var; var_ind ++) {
+            res[var_ind] = glp_get_col_prim(prob, var_ind+1);
+        }
+
+    }
+
+    // free the memory
+    delete[] ia;
+    delete[] ja;
+    delete[] ar;
+
+    glp_delete_prob(prob);
+
+    return optimal_value;
+
 }
