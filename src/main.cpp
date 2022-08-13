@@ -17,8 +17,8 @@ void expe() {
 
     for(unsigned int ind = 4; ind <= 10; ind ++) {
 
-        // string filename = "instances/A/A";
-        string filename = "instances/B/B";
+        string filename = "instances/A/A";
+        // string filename = "instances/B/B";
 
 
         ostringstream ss;
@@ -49,6 +49,10 @@ void expe() {
 
         unsigned int heuristic_value = bounds.best_fit();
         cout << "heuristic value: " << heuristic_value << endl << endl;
+
+        HeuristicSearch search(instance, bins);
+        unsigned int homemade_heuristic_value = search.solve();
+        cout << "homemade heuristic search: " << homemade_heuristic_value << endl << endl;
 
         double linear_relaxation = bounds.linear_relaxation();
         cout << "linear relaxation: " << linear_relaxation << " (" << ceil(linear_relaxation) << ")" << endl << endl;
@@ -89,11 +93,11 @@ int main() {
     // instance.loadFromFile("instances/A/jouet1.dat");
     // instance.loadFromFile("instances/A/A4.dat");
 
-    instance.loadFromFile("instances/A/A10.dat");
+    // instance.loadFromFile("instances/A/A10.dat");
 
     // instance.loadFromFile("instances/A/A5.dat");
 
-    // instance.loadFromFile("instances/A/A7.dat");
+    instance.loadFromFile("instances/A/A7.dat");
 
     instance.display();
 
@@ -106,6 +110,10 @@ int main() {
 
     unsigned int heuristic_value = bounds.best_fit();
     cout << "heuristic value: " << heuristic_value << endl << endl;
+
+    HeuristicSearch search(instance, bins);
+    unsigned int homemade_heuristic_value = search.solve();
+    cout << "homemade heuristic search: " << homemade_heuristic_value << endl << endl;
 
     double linear_relaxation = bounds.linear_relaxation();
     cout << "linear relaxation: " << linear_relaxation << " (" << ceil(linear_relaxation) << ")" << endl << endl;
@@ -125,11 +133,9 @@ int main() {
 
     // unsigned int best_val = solver.solve_bins(bins);
     // cout << "optimal value: " << best_val << endl;
+   
 
-    cout << "Local serach:" << endl;
-    LocalSearch search(instance, bins);
-
-    search.solve();
+    
 
     return 0;
 }
