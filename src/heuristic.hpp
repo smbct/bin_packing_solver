@@ -54,19 +54,22 @@ class HSolution {
 
 
 
-// implementation of a local search for the bin packing problem
-class LocalSearch {
+// implementation of a heuristic search for the bin packing problem
+class HeuristicSearch {
 
     public:
 
         // constructor
-        LocalSearch(Instance& instance, Bins& bins);
+        HeuristicSearch(Instance& instance, Bins& bins);
 
         // add bins to the solution
         void add_bins(HSolution& sol);
 
+        // remove bins from a feasible solution until removing any bin makes it unfeasible
+        void remove_bins(HSolution& solution, HSolution &best_sol);
+
         // solving function
-        void solve();
+        unsigned int solve();
 
     private:
 

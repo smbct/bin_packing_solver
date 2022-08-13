@@ -15,6 +15,8 @@
 #include <stack>
 #include <list>
 
+#include "heuristic.hpp"
+
 using namespace std;
 
 //---------------------------------------------------------
@@ -141,8 +143,17 @@ unsigned int Solver::solve_bins(Bins& bins) {
     prob = glp_create_prob();
     bounds.init_glpk_relaxation_v2(prob, bins);
     unsigned int initial_lower_bound = static_cast<unsigned int>(ceil(bounds.solve_glpk_relaxation_v2(prob)));
+    // unsigned int initial_lower_bound = static_cast<unsigned int>(ceil(bounds.linear_relaxation()));
 
-    unsigned int initial_upper_bound = bounds.best_fit();
+    // unsigned int initial_upper_bound = bounds.best_fit();
+
+    HeuristicSearch search(_instance, bins);
+    unsigned int initial_upper_bound = search.solve();
+
+    if(initial_lower_bound == initial_upper_bound) {
+        return initial_lower_bound;
+    }
+
     // initial_upper_bound = 26; // oracle
     unsigned int best_val = initial_upper_bound;
     unsigned int max_depth = best_val-1;
