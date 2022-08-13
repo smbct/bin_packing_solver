@@ -9,6 +9,8 @@
 #include "bounds.hpp"
 #include "heuristic.hpp"
 
+#include "knapsack.hpp"
+
 using namespace std;
 
 
@@ -89,6 +91,12 @@ int main() {
     // expe();
     // return 0;
 
+
+    // Knapsack solver test
+    // Knapsack knapsack;
+    // knapsack.test();
+    // return 0;
+
     Instance instance;
     // instance.loadFromFile("instances/A/jouet1.dat");
     // instance.loadFromFile("instances/A/A4.dat");
@@ -124,6 +132,8 @@ int main() {
     linear_relaxation = bounds.linear_relaxation_glpk_v2(bins);
     cout << "linear relaxation with glpk v2: " << linear_relaxation << " (" << ceil(linear_relaxation) << ")" << endl << endl;
 
+    double col_relaxation = bounds.column_relaxation();
+    cout << "linear relaxation with column generation: " << col_relaxation << endl;
 
     // Solver solver(instance);
 
