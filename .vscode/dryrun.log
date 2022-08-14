@@ -1,11 +1,12 @@
 make main --dry-run --always-make --keep-going --print-directory
 make: Entering directory '/home/samuel/programmation/bin_packing_solver'
 g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 src/heuristic.cpp -c -o obj/heuristic.o
+g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 src/knapsack.cpp -c -o obj/knapsack.o
 g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 src/bins.cpp -c -o obj/bins.o
 g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 src/bounds.cpp -c -o obj/bounds.o
 g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 src/main.cpp -c -o obj/main.o
 g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 src/instance.cpp -c -o obj/instance.o
 g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 src/solver.cpp -c -o obj/solver.o
-g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 obj/heuristic.o obj/bins.o obj/bounds.o obj/main.o obj/instance.o obj/solver.o -lglpk -o main
+g++ -std=c++2a -pedantic -Wfatal-errors -Wconversion -Wredundant-decls -Wshadow -Wall -Wextra -O3 obj/heuristic.o obj/knapsack.o obj/bins.o obj/bounds.o obj/main.o obj/instance.o obj/solver.o -lglpk -o main
 make: Leaving directory '/home/samuel/programmation/bin_packing_solver'
  
